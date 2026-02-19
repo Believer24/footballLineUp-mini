@@ -20,7 +20,7 @@ export interface AllFormations {
 
 export const FORMATIONS: AllFormations = {
   '5v5': {
-    '2-2': {
+    '2-2-1': {
       positions: [
         { x: 25, y: 75, label: 'DF' },
         { x: 75, y: 75, label: 'DF' },
@@ -29,7 +29,7 @@ export const FORMATIONS: AllFormations = {
         { x: 50, y: 52, label: 'MF' },
       ]
     },
-    '1-2-1': {
+    '1-3-1': {
       positions: [
         { x: 50, y: 80, label: 'DF' },
         { x: 25, y: 50, label: 'MF' },
@@ -38,7 +38,7 @@ export const FORMATIONS: AllFormations = {
         { x: 50, y: 20, label: 'FW' },
       ]
     },
-    '2-1-1': {
+    '3-2': {
       positions: [
         { x: 25, y: 75, label: 'DF' },
         { x: 75, y: 75, label: 'DF' },
@@ -47,7 +47,7 @@ export const FORMATIONS: AllFormations = {
         { x: 50, y: 90, label: 'DF' },
       ]
     },
-    '3-1': {
+    '3-1-1': {
       positions: [
         { x: 20, y: 70, label: 'DF' },
         { x: 50, y: 75, label: 'DF' },
