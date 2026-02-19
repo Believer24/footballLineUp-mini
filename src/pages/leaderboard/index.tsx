@@ -11,6 +11,7 @@ export default function Leaderboard() {
   const [players, setPlayers] = useState<any[]>([])
   const [tab, setTab] = useState(0)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useDidShow(() => {
     const user = getUser()
@@ -18,9 +19,18 @@ export default function Leaderboard() {
       Taro.reLaunch({ url: '/pages/login/index' })
       return
     }
+    setLoading(true)
     api.getLeaderboard()
-      .then((data) => { setPlayers(Array.isArray(data) ? data : []); setError('') })
-      .catch(() => setError('无法加载数据'))
+      .then((data) => { 
+        console.log('Leaderboard data:', data)
+        setPlayers(Array.isArray(data) ? data : [])
+        setError('') 
+      })
+      .catch((err) => { 
+        console.error('Leaderboard error:', err)
+        setError('无法加载数据') 
+      })
+      .finally(() => setLoading(false))
   })
 
   const goalRanking = [...players].sort((a, b) => (b.total_goals || 0) - (a.total_goals || 0))
@@ -120,7 +130,11 @@ export default function Leaderboard() {
 
       {error && <View className='error-msg'>{error}</View>}
 
-      {players.length === 0 ? (
+      {loading ? (
+        <View className='card text-center'>
+          <Text className='text-secondary'>加载中...</Text>
+        </View>
+      ) : players.length === 0 ? (
         <View className='card text-center'>
           <Text className='text-secondary'>暂无数据，完成比赛并录入数据后显示</Text>
         </View>
