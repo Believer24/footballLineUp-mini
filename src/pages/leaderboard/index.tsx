@@ -35,8 +35,9 @@ export default function Leaderboard() {
 
   const goalRanking = [...players].sort((a, b) => (b.total_goals || 0) - (a.total_goals || 0))
   const assistRanking = [...players].sort((a, b) => (b.total_assists || 0) - (a.total_assists || 0))
+  const interceptRanking = [...players].sort((a, b) => (b.total_interceptions || 0) - (a.total_interceptions || 0))
 
-  const tabs = ['⚽ 射手榜', '🤝 助攻榜', '⭐ 综合数据']
+  const tabs = ['⚽ 射手榜', '🤝 助攻榜', '🛡️ 拦截榜', '⭐ 综合数据']
 
   const renderPodium = (ranking: any[], getValue: (p: any) => number, unit: string, color: string) => {
     const top3 = ranking.slice(0, 3).filter(p => getValue(p) > 0)
@@ -94,6 +95,7 @@ export default function Leaderboard() {
         <Text className='rank-col-pos'>位置</Text>
         <Text className='rank-col-val-sm'>进球</Text>
         <Text className='rank-col-val-sm'>助攻</Text>
+        <Text className='rank-col-val-sm'>拦截</Text>
         <Text className='rank-col-val-sm'>MVP</Text>
         <Text className='rank-col-val-sm'>场次</Text>
       </View>
@@ -106,6 +108,7 @@ export default function Leaderboard() {
           <Text className='rank-col-pos'>{p.preferred_position}</Text>
           <Text className='rank-col-val-sm' style={{ color: '#4caf50', fontWeight: 'bold' }}>{p.total_goals || 0}</Text>
           <Text className='rank-col-val-sm' style={{ color: '#2196f3', fontWeight: 'bold' }}>{p.total_assists || 0}</Text>
+          <Text className='rank-col-val-sm' style={{ color: '#9c27b0', fontWeight: 'bold' }}>{p.total_interceptions || 0}</Text>
           <Text className='rank-col-val-sm' style={{ color: '#ffd700', fontWeight: 'bold' }}>{p.mvp_count || 0}</Text>
           <Text className='rank-col-val-sm'>{p.matches_played || 0}</Text>
         </View>
@@ -152,7 +155,13 @@ export default function Leaderboard() {
               {renderRankList(assistRanking, p => p.total_assists || 0, '助攻', '#2196f3')}
             </View>
           )}
-          {tab === 2 && renderOverview()}
+          {tab === 2 && (
+            <View>
+              {renderPodium(interceptRanking, p => p.total_interceptions || 0, '次拦截', '#9c27b0')}
+              {renderRankList(interceptRanking, p => p.total_interceptions || 0, '拦截', '#9c27b0')}
+            </View>
+          )}
+          {tab === 3 && renderOverview()}
         </ScrollView>
       )}
     </View>

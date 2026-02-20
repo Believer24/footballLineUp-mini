@@ -10,15 +10,16 @@ interface PlayerStat {
   playerName: string
   goals: number
   assists: number
+  interceptions: number
   yellowCards: number
   redCards: number
   rating: number
   isMVP: boolean
 }
 
-const calcRating = (s: { goals: number; assists: number; yellowCards: number; redCards: number }): number => {
-  if (s.goals === 0 && s.assists === 0 && s.yellowCards === 0 && s.redCards === 0) return 6.0
-  const raw = 6.0 + s.goals * 1.0 + s.assists * 0.5 - s.yellowCards * 0.5 - s.redCards * 1.5
+const calcRating = (s: { goals: number; assists: number; interceptions: number; yellowCards: number; redCards: number }): number => {
+  if (s.goals === 0 && s.assists === 0 && s.interceptions === 0 && s.yellowCards === 0 && s.redCards === 0) return 6.0
+  const raw = 6.0 + s.goals * 1.0 + s.assists * 0.5 + s.interceptions * 0.5 - s.yellowCards * 0.5 - s.redCards * 1.5
   return Math.round(Math.min(10, Math.max(1, raw)) * 10) / 10
 }
 
@@ -58,11 +59,13 @@ export default function Stats() {
               playerName: r.player_name || r.name,
               goals: existingStat?.goals || 0,
               assists: existingStat?.assists || 0,
+              interceptions: existingStat?.interceptions || 0,
               yellowCards: existingStat?.yellow_cards || 0,
               redCards: existingStat?.red_cards || 0,
               rating: existingStat ? calcRating({
                 goals: existingStat.goals || 0,
                 assists: existingStat.assists || 0,
+                interceptions: existingStat.interceptions || 0,
                 yellowCards: existingStat.yellow_cards || 0,
                 redCards: existingStat.red_cards || 0,
               }) : 6.0,
@@ -85,7 +88,7 @@ export default function Stats() {
     // Auto MVP: highest rating with at least one stat
     const maxRating = Math.max(...updated.map(s => s.rating))
     updated.forEach(s => {
-      const hasStats = s.goals > 0 || s.assists > 0
+      const hasStats = s.goals > 0 || s.assists > 0 || s.interceptions > 0
       s.isMVP = hasStats && s.rating === maxRating
     })
     setPlayerStats(updated)
@@ -192,6 +195,15 @@ export default function Stats() {
                     <Text className='stat-btn' onClick={() => updateStat(idx, 'assists', stat.assists - 1)}>-</Text>
                     <Text className='stat-value'>{stat.assists}</Text>
                     <Text className='stat-btn stat-btn-add' onClick={() => updateStat(idx, 'assists', stat.assists + 1)}>+</Text>
+                  </View>
+                </View>
+
+                <View className='stat-item'>
+                  <Text className='stat-label'>🛡️ 拦截</Text>
+                  <View className='stat-controls'>
+                    <Text className='stat-btn' onClick={() => updateStat(idx, 'interceptions', stat.interceptions - 1)}>-</Text>
+                    <Text className='stat-value'>{stat.interceptions}</Text>
+                    <Text className='stat-btn stat-btn-add' onClick={() => updateStat(idx, 'interceptions', stat.interceptions + 1)}>+</Text>
                   </View>
                 </View>
 
