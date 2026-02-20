@@ -21,7 +21,7 @@ export default function Login() {
       const res = await api.login(username.trim(), password)
       if (res.success && res.user) {
         saveUser(res.user)
-        Taro.switchTab({ url: 'pages/matches/index' })
+        Taro.reLaunch({ url: '/pages/matches/index' })
       } else {
         setError('用户名或密码错误')
       }
