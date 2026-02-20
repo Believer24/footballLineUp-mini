@@ -174,101 +174,6 @@ export default function Tactics() {
     }
   }
 
-  const handleExportImage = async () => {
-    try {
-      const pageInstance = Taro.getCurrentInstance()
-      const query = Taro.createSelectorQuery()
-      query.select('#pitch-canvas').boundingClientRect()
-      query.exec((res) => {
-        if (!res[0]) {
-          Taro.showToast({ title: '无法获取球场元素', icon: 'none' })
-          return
-        }
-        Taro.showLoading({ title: '生成图片中...' })
-        
-        const canvasContext = Taro.createCanvasContext('pitch-canvas', pageInstance)
-        
-        canvasContext.setFillStyle('#2d5a27')
-        canvasContext.fillRect(0, 0, res[0].width, res[0].height)
-        
-        canvasContext.setStrokeStyle('#ffffff')
-        canvasContext.setLineWidth(2)
-        canvasContext.beginPath()
-        canvasContext.moveTo(0, res[0].height / 2)
-        canvasContext.lineTo(res[0].width, res[0].height / 2)
-        canvasContext.stroke()
-        
-        canvasContext.beginPath()
-        canvasContext.arc(res[0].width / 2, res[0].height / 2, 30, 0, 2 * Math.PI)
-        canvasContext.stroke()
-        
-        positions.forEach((pos: any, index: number) => {
-          const player = lineup[index]
-          const x = (pos.x / 100) * res[0].width
-          const y = (pos.y / 100) * res[0].height
-          
-          canvasContext.setFillStyle('#42a5f5')
-          canvasContext.beginPath()
-          canvasContext.arc(x, y, 20, 0, 2 * Math.PI)
-          canvasContext.fill()
-          
-          if (player) {
-            canvasContext.setFillStyle('#ffffff')
-            canvasContext.setFontSize(12)
-            canvasContext.setTextAlign('center')
-            canvasContext.fillText(player.name.substring(0, 4), x, y + 4)
-          } else {
-            canvasContext.setFillStyle('#ffffff')
-            canvasContext.setFontSize(10)
-            canvasContext.setTextAlign('center')
-            canvasContext.fillText(pos.label, x, y + 4)
-          }
-        })
-        
-        canvasContext.draw(false, () => {
-          setTimeout(() => {
-            Taro.canvasToTempFilePath({
-              canvasId: 'pitch-canvas',
-              success: (result) => {
-                Taro.hideLoading()
-                Taro.saveImageToPhotosAlbum({
-                  filePath: result.tempFilePath,
-                  success: () => {
-                    Taro.showToast({ title: '已保存到相册', icon: 'success' })
-                  },
-                  fail: (err) => {
-                    Taro.hideLoading()
-                    if (err.errMsg.includes('auth deny')) {
-                      Taro.showModal({
-                        title: '提示',
-                        content: '需要授权保存图片到相册',
-                        success: (res) => {
-                          if (res.confirm) {
-                            Taro.openSetting()
-                          }
-                        }
-                      })
-                    } else {
-                      Taro.showToast({ title: '保存失败', icon: 'none' })
-                    }
-                  }
-                })
-              },
-              fail: () => {
-                Taro.hideLoading()
-                Taro.showToast({ title: '生成图片失败', icon: 'none' })
-              }
-            }, pageInstance)
-          }, 500)
-        })
-      })
-    } catch (err) {
-      Taro.hideLoading()
-      Taro.showToast({ title: '导出失败', icon: 'none' })
-      console.error('Export error:', err)
-    }
-  }
-
   useDidShow(() => {
     if (!user) { Taro.redirectTo({ url: '/pages/login/index' }); return }
     const instance = Taro.getCurrentInstance()
@@ -281,7 +186,7 @@ export default function Tactics() {
 
       const format = data.format || '5v5'
       const lineupSize = format === '5v5' ? 5 : format === '7v7' ? 7 : 11
-      const formationKey = data.formation || Object.keys(FORMATIONS[format] || {})[0] || '1-2-1'
+      const formationKey = data.formation || Object.keys(FORMATIONS[format] || {})[0] || '2-2-1'
       setCurrentFormation(formationKey)
 
       const calcRating = (s: { goals: number; assists: number; yellowCards: number; redCards: number }): number => {
