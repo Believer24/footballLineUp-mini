@@ -410,21 +410,8 @@ export default function Tactics() {
                 {saving ? '保存中...' : '💾 保存阵型'}
               </Text>
             </View>
-            <View className='btn-save btn-save-half btn-export' onClick={handleExportImage}>
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: '28rpx' }}>
-                📷 导出图片
-              </Text>
-            </View>
           </View>
-        ) : (
-          <View className='btn-row'>
-            <View className='btn-save btn-save-full' onClick={handleExportImage}>
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: '28rpx' }}>
-                📷 导出阵型图片
-              </Text>
-            </View>
-          </View>
-        )}
+        ) : null}
 
         {/* 球场 */}
         <View className='pitch'>
@@ -506,8 +493,6 @@ export default function Tactics() {
         </View>
 
         <View style={{ height: '40rpx' }} />
-        
-        <Canvas canvasId='pitch-canvas' style={{ width: '300px', height: '400px', position: 'fixed', left: '-9999px', top: '-9999px' }} />
       </View>
     </ScrollView>
   )
