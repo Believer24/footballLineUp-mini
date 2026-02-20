@@ -37,16 +37,16 @@ const POSITION_AVATARS: Record<string, string[]> = {
   FW: [ST01, ST02, ST03, ST04, ST05, ST06],
 }
 
-const getPositionCategory = (pos: string): string => {
-  if (pos === 'GK') return 'GK'
+const getPositionCategory = (pos: string, hasGK: boolean = false): string => {
+  if (pos === 'GK') return hasGK ? 'GK' : 'DF'
   if (['CB', 'LB', 'RB', 'LWB', 'RWB', 'DF'].includes(pos)) return 'DF'
   if (['CDM', 'CM', 'CAM', 'LM', 'RM', 'LW', 'RW', 'MF'].includes(pos)) return 'MF'
   if (['ST', 'CF', 'FW'].includes(pos)) return 'FW'
   return 'MF'
 }
 
-const getPositionAvatar = (position: string, index: number): string => {
-  const cat = getPositionCategory(position)
+const getPositionAvatar = (position: string, index: number, hasGK: boolean = false): string => {
+  const cat = getPositionCategory(position, hasGK)
   const avatars = POSITION_AVATARS[cat] || POSITION_AVATARS.MF
   return avatars[index % avatars.length]
 }
@@ -185,6 +185,7 @@ export default function Tactics() {
       setMatch(data)
 
       const format = data.format || '5v5'
+      const hasGK = format !== '5v5'
       const lineupSize = format === '5v5' ? 5 : format === '7v7' ? 7 : 11
       const formationKey = data.formation || Object.keys(FORMATIONS[format] || {})[0] || '2-2-1'
       setCurrentFormation(formationKey)
@@ -225,12 +226,12 @@ export default function Tactics() {
         const newBench: any[] = []
         sorted.forEach((reg: any, i: number) => {
           const pos = reg.preferred_position || 'MF'
-          const cat = getPositionCategory(pos)
+          const cat = getPositionCategory(pos, hasGK)
           const avatarIdx = posAvatarIdx[cat] || 0
           posAvatarIdx[cat] = avatarIdx + 1
           const player = {
             id: reg.player_id, name: reg.player_name || reg.name, position: pos,
-            avatar: getPositionAvatar(pos, avatarIdx), rating: reg.rating || 75,
+            avatar: getPositionAvatar(pos, avatarIdx, hasGK), rating: reg.rating || 75,
             jerseyNumber: reg.position_index != null ? reg.position_index + 1 : i + 1,
           }
           if (reg.is_starter && reg.position_index != null && reg.position_index < lineupSize) {
@@ -250,6 +251,7 @@ export default function Tactics() {
   if (error) return <View className='container'><View className='error-msg'>{error}</View></View>
 
   const format = match?.format || '5v5'
+  const hasGK = format !== '5v5'
   const formationKeys = Object.keys(FORMATIONS[format] || {})
   const formationIdx = formationKeys.indexOf(currentFormation)
   const formationData = FORMATIONS[format]?.[currentFormation]
@@ -329,7 +331,7 @@ export default function Tactics() {
 
           {positions.map((pos: any, index: number) => {
             const player = lineup[index]
-            const cat = getPositionCategory(pos.label)
+            const cat = getPositionCategory(pos.label, hasGK)
             const badgeColor = BADGE_COLORS[cat] || '#2196f3'
             const isSelected = selectedFrom === 'lineup' && selectedIndex === index
             const isFlipped = flippedMap['lineup-' + index] || false
@@ -380,7 +382,7 @@ export default function Tactics() {
           ) : (
             <View className='bench-list'>
               {bench.map((player: any, i: number) => {
-                const cat = getPositionCategory(player.position)
+                const cat = getPositionCategory(player.position, hasGK)
                 const badgeColor = BADGE_COLORS[cat] || '#2196f3'
                 const isSelected = selectedFrom === 'bench' && selectedIndex === i
                 return (
