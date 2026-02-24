@@ -67,8 +67,6 @@ export default function Login() {
         <View className='login-btn' onClick={handleLogin}>
           <Text style={{ color: '#fff' }}>{loading ? '登录中...' : '登 录'}</Text>
         </View>
-
-        <Text className='login-hint'>默认账号：captain / manager / player1，密码：123456</Text>
       </View>
     </View>
   )
