@@ -145,19 +145,19 @@ export default function Leaderboard() {
         <ScrollView scrollY className='scroll-content'>
           {tab === 0 && (
             <View>
-              {renderPodium(goalRanking, p => p.total_goals || 0, '粒进球', '#4caf50')}
+              {renderPodium(goalRanking, p => p.total_goals || 0, '进球', '#4caf50')}
               {renderRankList(goalRanking, p => p.total_goals || 0, '进球', '#4caf50')}
             </View>
           )}
           {tab === 1 && (
             <View>
-              {renderPodium(assistRanking, p => p.total_assists || 0, '次助攻', '#2196f3')}
+              {renderPodium(assistRanking, p => p.total_assists || 0, '助攻', '#2196f3')}
               {renderRankList(assistRanking, p => p.total_assists || 0, '助攻', '#2196f3')}
             </View>
           )}
           {tab === 2 && (
             <View>
-              {renderPodium(interceptRanking, p => p.total_interceptions || 0, '次拦截', '#9c27b0')}
+              {renderPodium(interceptRanking, p => p.total_interceptions || 0, '拦截', '#9c27b0')}
               {renderRankList(interceptRanking, p => p.total_interceptions || 0, '拦截', '#9c27b0')}
             </View>
           )}
