@@ -37,7 +37,7 @@ export default function Leaderboard() {
   const assistRanking = [...players].sort((a, b) => (b.total_assists || 0) - (a.total_assists || 0))
   const interceptRanking = [...players].sort((a, b) => (b.total_interceptions || 0) - (a.total_interceptions || 0))
 
-  const tabs = ['⚽ 射手榜', '🤝 助攻榜', '🛡️ 拦截榜', '⭐ 综合数据']
+  const tabs = ['⚽ 射手榜', '🤝 助攻榜', '🛡️ 拦截', '⭐ 综合']
 
   const renderPodium = (ranking: any[], getValue: (p: any) => number, unit: string, color: string) => {
     const top3 = ranking.slice(0, 3).filter(p => getValue(p) > 0)
